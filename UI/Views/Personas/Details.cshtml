@@ -1,14 +1,13 @@
 ﻿@model Entities.clsPersona
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Details";
 }
 
-<h1>Eliminar</h1>
+<h1>Detalles de @Model.Nombre @Model.Apellidos </h1>
 
-<h3>¿Seguro que quieres eliminar a @Model.Nombre @Model.Apellidos de tu DataBase?</h3>
 <div>
-    <h4>clsPersona</h4>
+   
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -60,9 +59,8 @@
             @Html.DisplayFor(model => model.IdDepartamento)
         </dd>
     </dl>
-    
-    <form asp-action="Delete">
-        <input type="submit" value="Eliminar" class="btn btn-danger" /> |
-        <a asp-action="Index">Volver a la Lista</a>
-    </form>
+</div>
+<div>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }) |
+    <a asp-action="Index">Volver a la Lista</a>
 </div>

@@ -53,18 +53,20 @@ namespace DAL.Gestion
             comando.Parameters.Add("@departamento", System.Data.SqlDbType.SmallInt).Value = departamento;
 
             try
-            {
+            {    //Por más que lo intento no consigo introducir la imagen en la base de datos ya que cuando quiero hacerlo
+                //Me dice que la variable tiene que ser truncada(supongo que tiene mas longitud que la que acepta varbinary pero no encuentro como hacerlo)
+
                 conexion = Db.Abrirconexion();
-                if (imagen != null)
-                {
-                    //Le damos el parámetro de la imagen ya que si este es null saltarán excepciones
-                    comando.Parameters.Add("@imagen", System.Data.SqlDbType.Image).Value = imagen;
-                    comando.CommandText = "Insert into Personas Values(@nombre,@apellidos,@telefono,@direccion,@fechaNacimiento,@imagen,@departamento)";
-                }
-                else
-                {
+                //if (imagen != null)
+                //{
+                //    //Le damos el parámetro de la imagen ya que si este es null saltarán excepciones
+                //    comando.Parameters.Add("@imagen", System.Data.SqlDbType.Image).Value = imagen;
+                //    comando.CommandText = "Insert into Personas Values(@nombre,@apellidos,@telefono,@direccion,@fechaNacimiento,@imagen,@departamento)";
+                //}
+                //else
+                //{
                     comando.CommandText = "Insert into Personas(nombre,apellidos,telefono,direccion,fechaNacimiento,departamento) Values(@nombre,@apellidos,@telefono,@direccion,@fechaNacimiento,@departamento)";
-                }
+                //}
 
                 comando.Connection = conexion;
                 //Se ejecuta la Query
@@ -143,20 +145,21 @@ namespace DAL.Gestion
             try
             {
             
-                if (persona.Imagen != null)
-                { 
-                    comando.Parameters.Add("@imagen", System.Data.SqlDbType.VarChar).Value = Convert.ToBase64String(persona.Imagen).Trim();
+                //Aqui ocurre lo mismo que en la creacion. No funciona la subida de imagenes
+                //if (persona.Imagen != null)
+                //{ 
+                //    comando.Parameters.Add("@imagen", System.Data.SqlDbType.VarChar).Value = Convert.ToBase64String(persona.Imagen).Trim();
 
-                    conexion = Db.Abrirconexion();
-                    comando.CommandText = "Update Personas set nombre = @nombre, apellidos = @apellidos,telefono = @telefono,direccion = @direccion," +
-                        "fechaNacimiento = @fechaNacimiento,imagen = Convert(varbinary(max), @imagen),departamento = @departamento where id = @id";
-                }
-                else
-                {
+                //    conexion = Db.Abrirconexion();
+                //    comando.CommandText = "Update Personas set nombre = @nombre, apellidos = @apellidos,telefono = @telefono,direccion = @direccion," +
+                //        "fechaNacimiento = @fechaNacimiento,imagen = Convert(varbinary(max), @imagen),departamento = @departamento where id = @id";
+                //}
+                //else
+                //{
                     conexion = Db.Abrirconexion();
                     comando.CommandText = "Update Personas set nombre = @nombre, apellidos = @apellidos,telefono = @telefono,direccion = @direccion," +
                         "fechaNacimiento = @fechaNacimiento,departamento = @departamento Where id = @id";
-                }
+                //}
 
                 comando.Connection = conexion;
                 resultado = comando.ExecuteNonQuery();

@@ -18,7 +18,13 @@ namespace UI.Controllers
     public class PersonasController : Controller
     {
         GestionPersonasBL gestora = new GestionPersonasBL();
+        IHostEnvironment he;
 
+
+        public PersonasController(IHostEnvironment e)
+        {
+            he = e;
+        }
 
 
         // GET: PersonasController
@@ -29,11 +35,18 @@ namespace UI.Controllers
             return View(personas);
         }
 
+
+
+
         // GET: PersonasController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            clsPersona persona = ListadoPersonasBL.getPersonaDeLaLista(id);
+            return View(persona);
         }
+
+
+
 
         // GET: PersonasController/Create
         public ActionResult Create()
@@ -42,16 +55,29 @@ namespace UI.Controllers
             return View();
         }
 
+
+        
         // POST: PersonasController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(string Nombre, string Apellidos, string Telefono, string Direccion, DateTime FechaNacimiento,byte[] Imagen, short idDepartamento)
+        public ActionResult Create(string Nombre, string Apellidos, string Telefono, string Direccion, DateTime FechaNacimiento,IFormFile Imagen, short idDepartamento)
         {
+            byte[] arrayImagen = null;
             ViewBag.Dpts = ListadoDepartamentosBL.getListadoDepartamentos();
+
+            //Se introduce la imagen en nuestra carpeta root para poder rescatarla, pero cuando pasa a byte[] se convierte en un array demasiado 
+            //largo como para introducirlo en el campo imagen de la tabla Personas en la Db.
+            if(Imagen!= null)
+            {
+                var nombreImagen = Path.Combine(he.ContentRootPath = "~\\wwwroot\\", Path.GetFileName(Imagen.FileName));
+                Imagen.CopyTo(new FileStream(nombreImagen, FileMode.Create));
+                arrayImagen = Convert.FromBase64String(nombreImagen);
+
+            }
             try
             {
                 
-                gestora.InsertPersona(Nombre, Apellidos, Telefono, Direccion, FechaNacimiento, Imagen, idDepartamento);
+                gestora.InsertPersona(Nombre, Apellidos, Telefono, Direccion, FechaNacimiento, arrayImagen, idDepartamento);
                 
                 return RedirectToAction(nameof(Index));
             }
@@ -61,12 +87,18 @@ namespace UI.Controllers
             }
         }
 
+
+
+
         // GET: PersonasController/Edit/5
         public ActionResult Edit(int id)
         {
             clsPersona persona = ListadoPersonasBL.getPersonaDeLaLista(id);
             return View(persona);
         }
+
+
+
 
         // POST: PersonasController/Edit/5
         [HttpPost]
@@ -75,17 +107,6 @@ namespace UI.Controllers
         {   clsPersona persona = new clsPersona();
             try
             {
-
-                using (var ms = new MemoryStream())
-                {
-                    imagen.CopyTo(ms);
-                    var fileBytes = ms.ToArray();
-                    string s = Convert.ToBase64String(fileBytes);
-                    persona.Imagen = Convert.FromBase64String(s);
-                    // act on the Base64 data
-                }
-
-
                 persona.Id = id;
                 persona.Nombre = nombre;
                 persona.Apellidos = apellidos;
@@ -116,6 +137,12 @@ namespace UI.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Método que extrae el array de bytes deun archivo
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         private byte[] GetByteArrayFromImage(IFormFile file)
         {
             using (var target = new MemoryStream())
@@ -130,7 +157,7 @@ namespace UI.Controllers
         {
             clsPersona persona = new clsPersona();
             bool fin = false;
-            for (int i = 0; i < ListadoPersonasBL.getListadoPersonas().Count; i++)
+            for (int i = 0; i < ListadoPersonasBL.getListadoPersonas().Count && !fin; i++)
             {
                 if (ListadoPersonasBL.getListadoPersonas().ElementAt(i).Id == id)
                 {

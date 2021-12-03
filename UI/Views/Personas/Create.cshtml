@@ -4,9 +4,9 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>Crear nueva entrada en la Data Base</h1>
 
-<h4>clsPersona</h4>
+
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -50,7 +50,7 @@
                         
                         foreach (var departamento in DAL.Listas.ListadoDepartamentos.getListadoDepartamentos())
                         {
-                            <option>@departamento.Id</option>
+                            <option value="@departamento.Id">@departamento.nombre</option>
 }
 
                     }
@@ -65,7 +65,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Volver a la Lista</a>
 </div>
 
 @section Scripts {
