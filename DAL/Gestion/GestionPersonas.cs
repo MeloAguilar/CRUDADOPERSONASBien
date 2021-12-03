@@ -60,12 +60,12 @@ namespace DAL.Gestion
                 //if (imagen != null)
                 //{
                 //    //Le damos el parámetro de la imagen ya que si este es null saltarán excepciones
-                //    comando.Parameters.Add("@imagen", System.Data.SqlDbType.Image).Value = imagen;
+                //    comando.Parameters.Add("@imagen", System.Data.SqlDbType.VarBinary).Value = imagen;
                 //    comando.CommandText = "Insert into Personas Values(@nombre,@apellidos,@telefono,@direccion,@fechaNacimiento,@imagen,@departamento)";
                 //}
                 //else
                 //{
-                    comando.CommandText = "Insert into Personas(nombre,apellidos,telefono,direccion,fechaNacimiento,departamento) Values(@nombre,@apellidos,@telefono,@direccion,@fechaNacimiento,@departamento)";
+                comando.CommandText = "Insert into Personas(nombre,apellidos,telefono,direccion,fechaNacimiento,departamento) Values(@nombre,@apellidos,@telefono,@direccion,@fechaNacimiento,@departamento)";
                 //}
 
                 comando.Connection = conexion;
